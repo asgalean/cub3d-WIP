@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <MLX42/MLX42.h>
 
 #define DISTANCE 32
 
@@ -46,18 +47,20 @@ typedef struct s_player
 }  t_player;
 
 
-
-typedef struct s_textures
-{
-
-} t_textures;
-
-
 typedef struct s_datass
 {
 	t_map	*map;
 	t_player *player;
 
-
 } t_datass;
+
+
+typedef struct s_ray
+{
+    double  dist;
+    double  wall_percent;  // fractional hit position (0.0 to 1.0)
+    double	collision_x;
+    double	collision_y;
+    char	face;    //NSWE
+}   t_ray;
 
