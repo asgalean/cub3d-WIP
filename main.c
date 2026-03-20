@@ -199,8 +199,6 @@ t_ray cast_ray(double angle, t_data *data) //data->player and map
 	if (final_ray.face == 'S' || final_ray.face == 'W') //para que los muros no se impirmanal reves
     	final_ray.wall_percent = 1.0 - final_ray.wall_percent;
 
-	if (final_ray.dist < 0.01) //para no meterse en muros (temp. en lugar de chekear las colisiones)
-	    final_ray.dist = 0.01;
 	//return(fmin(h_collision(rad_angle, data), v_collision(rad_angle, data)));
 	//temp
 	return (final_ray);
@@ -233,19 +231,19 @@ int validate_mlx(t_data *data)
 		return (1);
 	}
 	data->tex_s = mlx_load_png("textures/south.png");
-	if (!data->tex_n)
+	if (!data->tex_s)
 	{
 		puts(mlx_strerror(mlx_errno));
 		return (1);
 	}
 	data->tex_e = mlx_load_png("textures/east.png");
-	if (!data->tex_n)
+	if (!data->tex_e)
 	{
 		puts(mlx_strerror(mlx_errno));
 		return (1);
 	}
 	data->tex_w = mlx_load_png("textures/west.png");
-	if (!data->tex_n)
+	if (!data->tex_w)
 	{
 		puts(mlx_strerror(mlx_errno));
 		return (1);
@@ -336,9 +334,9 @@ int	main(int argc, char *argv[])
 			"111111111"
 		},
 		.player = {
-			.X = 3.5,
+			.X = 4.5,
 			.Y = 1.5,
-			.angle = 90.035 //.0204 if distance is more than 0.5
+			.angle = 90.05 //.0204 if distance is more than 0.5
 		}
 	};
 	
