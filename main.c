@@ -1,142 +1,56 @@
-#include "my_pp.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcuello <mcuello@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/25 16:45:37 by mcuello           #+#    #+#             */
+/*   Updated: 2026/03/25 16:55:04 by mcuello          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "cub3d.h"
 
-/*
-char map[5][6] = {
-	"10111",
-	"11101",
-	"10001",
-	"100N1",
-	"11111"
-};*/
-
-
-
-//static mlx_image_t* image;
-
-
-
-
-
-//******************************************************************************
-//******************************************************************************
-
-
-
-
-//******************************************************************************
-//******************************************************************************
-
-
-/*
-RAYS NEEDS:
-	tile_size
-	data->player.angle
-	data->player.X
-	data->player.Y
-*/
-
-//******************************************************************************
-//******************************************************************************
-
-
-
-//******************************************************************************
-//******************************************************************************
-
-
-
-
-
-int validate_mlx(t_data *data)
+int	ft_error(char *str)
 {
-	if (!(data->mlx = mlx_init(WIDTH, HEIGHT, "CUB3D", true)))
-	{
-		puts(mlx_strerror(mlx_errno));
-		return(1);
-	}
-	if (!(data->img = mlx_new_image(data->mlx, WIDTH, HEIGHT)))
-	{
-		mlx_close_window(data->mlx);
-		puts(mlx_strerror(mlx_errno));
-		return(1);
-	}
-	if (mlx_image_to_window(data->mlx, data->img, 0, 0) == -1)
-	{
-		mlx_close_window(data->mlx);
-		puts(mlx_strerror(mlx_errno));
-		return(1);
-	}
-	//textures
-	data->tex_n = mlx_load_png("textures/north.png");
-	if (!data->tex_n)
-	{
-		puts(mlx_strerror(mlx_errno));
-		return (1);
-	}
-	data->tex_s = mlx_load_png("textures/south.png");
-	if (!data->tex_s)
-	{
-		puts(mlx_strerror(mlx_errno));
-		return (1);
-	}
-	data->tex_e = mlx_load_png("textures/east.png");
-	if (!data->tex_e)
-	{
-		puts(mlx_strerror(mlx_errno));
-		return (1);
-	}
-	data->tex_w = mlx_load_png("textures/west.png");
-	if (!data->tex_w)
-	{
-		puts(mlx_strerror(mlx_errno));
-		return (1);
-	}
-	return (0);
+	printf("%s", str);
+	return (1);
 }
 
-//******************************************************************************
-//******************************************************************************
-
-
-
-int	main(int argc, char *argv[])
+int	main(int argc, char **argv)
 {
-	//t_data	data;
-	(void)argv;
-	(void)argc;
-	
-	t_data data = {
-		.map = {
-			"111111111",
-			"100000001",
-			"1000N0001",
-			"100000001",
-			"100000001",
-			"101000001",
-			"100001001",
-			"100000001",
-			"100000001",
-			"111111111"
-		},
-		.player = {
-			.X = 4.5,
-			.Y = 1.5,
-			.angle = 90.05, //.0204 if distance is more than 0.5
-			.speed = 0.1
-		}
-	};
-	
-	if (validate_mlx(&data))
+	t_game	game;
+	t_map	map;
+	t_fd	fd_content;
+
+	if (argc != 2)
+	{
+		printf("Uso: %s <mapa.cub>\n", argv[0]);
+		return (1);
+	}
+	if (check_extension(argv[1]) == -1)
+	{
+		ft_error("Error: El archivo debe tener la extension .cub\n");
+		return (1);
+	}
+	if (read_fd(argv[1], &fd_content) == -1)
+		return (1);
+	if (parse_fd(argv[1], &fd_content) == -1)
+		return (free_fd(&fd_content), 1);
+	fd_content.map = &map;
+	if (parse_map(&fd_content, fd_content.map_start) == -1)
+		return (free_fd(&fd_content), free_map(map.map), 1);
+	if (is_valid_map(&map) == -1)
+		return (free_fd(&fd_content), free_map(map.map), 1);
+	if (set_game(&fd_content, &game) == 1)
+		return (free_fd(&fd_content), free_map(map.map), 1);
+	if (validate_mlx(&game, &fd_content))
 		return (623);
-	
-	//le decimos a la mlx que llame a esta funcion a cada frame, y el tercer argumento es el parametro para la funcion
-	mlx_loop_hook(data.mlx, loop_func, &data);
-	mlx_loop(data.mlx);
-	mlx_terminate(data.mlx);
-		
-		//////////////////////////////
-	
+	mlx_loop_hook(game.mlx, loop_func, &game);
+	mlx_loop(game.mlx);
+	mlx_terminate(game.mlx);
+	free_fd(&fd_content);
+	free_map(map.map);
 	return (0);
 }
-

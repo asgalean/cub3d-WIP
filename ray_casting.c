@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "my_pp.h"
+#include "cub3d.h"
 
 static t_ray	ray_choosing(t_ray *h_ray, t_ray *v_ray,
-				double angle, t_data *data)
+				double angle, t_game *data)
 {
 	double	rad_angle;
 	t_ray	final_ray;
@@ -45,7 +45,7 @@ static t_ray	ray_choosing(t_ray *h_ray, t_ray *v_ray,
 //******************************************************************************
 //******************************************************************************
 
-t_ray	cast_ray(double angle, t_data *data)
+t_ray	cast_ray(double angle, t_game *data)
 {
 	double	rad_angle;
 	t_ray	h_ray;
