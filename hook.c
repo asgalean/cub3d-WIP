@@ -71,7 +71,7 @@ void	ft_hook(t_game *data)
 	rad = data->player.angle * ANGLE_TO_RADIAN;
 	if (mlx_is_key_down(data->mlx, MLX_KEY_ESCAPE)
 		|| mlx_is_key_down(data->mlx, MLX_KEY_Q))
-		clean_and_close(data);
+		mlx_close_window(data->mlx);
 	if (mlx_is_key_down(data->mlx, MLX_KEY_LEFT))
 		data->player.angle += 1;
 	if (mlx_is_key_down(data->mlx, MLX_KEY_RIGHT))

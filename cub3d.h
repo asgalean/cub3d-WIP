@@ -90,16 +90,16 @@ typedef struct s_player
 
 typedef struct s_game
 {
-	mlx_t		*mlx;
-	mlx_image_t	*img;
-	t_map		*map;
-	t_player	player;
-	void		*text_n;
-	void		*text_s;
-	void		*text_w;
-	void		*text_e;
-	uint32_t	floor;
-	uint32_t	ceiling;
+	mlx_t			*mlx;
+	mlx_image_t		*img;
+	t_map			*map;
+	t_player		player;
+	mlx_texture_t	*text_n;
+	mlx_texture_t	*text_s;
+	mlx_texture_t	*text_w;
+	mlx_texture_t	*text_e;
+	uint32_t		floor;
+	uint32_t		ceiling;
 }	t_game;
 
 typedef struct s_ray
@@ -133,6 +133,6 @@ double	h_collision(double angle, t_game *data, t_ray *h_ray);
 t_ray	cast_ray(double angle, t_game *data);
 
 int		validate_mlx(t_game *game, t_fd *fd);
-void	clean_and_close(t_game *data);
+void	clean_and_close(t_game *data, t_fd *fd_content, t_map *map);
 
 #endif

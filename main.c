@@ -12,6 +12,20 @@
 
 #include "cub3d.h"
 
+static int	all_checker(t_game *game, t_map *map, t_fd *fd_content)
+{
+	ft_memset(game, 0, sizeof(t_game));
+	if (parse_map(fd_content, fd_content->map_start) == -1)
+		return (free_fd(fd_content), free_map(map->map), 1);
+	if (is_valid_map(map) == -1)
+		return (free_fd(fd_content), free_map(map->map), 1);
+	if (set_game(fd_content, game) == 1)
+		return (free_fd(fd_content), free_map(map->map), 1);
+	if (validate_mlx(game, fd_content))
+		return (clean_and_close(game, fd_content, map), 1);
+	return (0);
+}
+
 int	ft_error(char *str)
 {
 	printf("%s", str);
@@ -39,18 +53,10 @@ int	main(int argc, char **argv)
 	if (parse_fd(argv[1], &fd_content) == -1)
 		return (free_fd(&fd_content), 1);
 	fd_content.map = &map;
-	if (parse_map(&fd_content, fd_content.map_start) == -1)
-		return (free_fd(&fd_content), free_map(map.map), 1);
-	if (is_valid_map(&map) == -1)
-		return (free_fd(&fd_content), free_map(map.map), 1);
-	if (set_game(&fd_content, &game) == 1)
-		return (free_fd(&fd_content), free_map(map.map), 1);
-	if (validate_mlx(&game, &fd_content))
-		return (623);
+	if (all_checker(&game, &map, &fd_content) == 1)
+		return (1);
 	mlx_loop_hook(game.mlx, loop_func, &game);
 	mlx_loop(game.mlx);
-	mlx_terminate(game.mlx);
-	free_fd(&fd_content);
-	free_map(map.map);
+	clean_and_close(&game, &fd_content, &map);
 	return (0);
 }

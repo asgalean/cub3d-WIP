@@ -6,7 +6,7 @@
 /*   By: mcuello <mcuello@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:49:19 by mcuello           #+#    #+#             */
-/*   Updated: 2026/03/25 16:48:23 by mcuello          ###   ########.fr       */
+/*   Updated: 2026/03/25 21:34:21 by mcuello          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	is_empty_line(char *line)
 {
-	while (*line == ' ')
+	while (*line == ' ' || *line == '\n')
 		line++;
 	if (*line == '\0')
 		return (1);
@@ -59,9 +59,15 @@ int	parse_map(t_fd *fd_data, int start)
 	if (!map->map)
 		return (ft_error("Error: fallo en el parseo del mapa.\n"), -1);
 	fill = fill_map(fd_data, map, start);
-	if (fill != map->height)
-		return (ft_error("Error: contenido invalido despues del mapa.\n"), -1);
+	map->height = fill;
+	while (fd_data->line[start + fill])
+	{
+		if (!is_empty_line(fd_data->line[start + fill]))
+		{
+			ft_error("Error: contenido invalido despues del mapa.\n");
+			return (-1);
+		}
+		fill++;
+	}
 	return (0);
 }
-//tambien poner fuera del if si las lineas que quedan son empty. 
-//despues del mapa para que funcione
